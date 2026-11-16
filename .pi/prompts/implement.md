@@ -6,12 +6,14 @@ argument-hint: "<feature-description-file>"
 ---
 
 1. **Inspect.** Read `$1`, dependencies, conventions, and relevant code. Locate its `plan.md`. Verify dependencies are Done; never silently implement blockers. Set status to In progress.
-2. **Specify tests.** Have **test-writer** add minimal, high-signal behavioral tests without changing implementation. For contract-only slices, use objective contract/schema checks.
-3. **Establish baseline.** Run tests. Confirm failures represent missing behavior, not setup, syntax, or unrelated problems. If behavior already exists, verify meaningful coverage without forcing red. Report unrelated baseline failures separately.
-4. **Implement.** Have **builder** implement only this slice without weakening valid tests or expanding scope. Document significant, non-obvious decisions and tradeoffs in `docs/features/<feature-name>/decisions.md`; omit routine choices. Keep entries as short as possible without loosing information or meaning.
-5. **Verify.** Run relevant behavioral, regression, and applicable type, lint, build, integration, and contract checks. Investigate failures; distinguish baseline issues from regressions. Correct invalid tests through test-writer with explanation, never workarounds.
-6. **Handle changes.** Escalate consequential ambiguity or changed guarantees. Update the spec and affected tests before proceeding. Do not silently redefine behavior.
-7. **Complete.** Mark Done in `plan.md` only when guarantees are verified and no attributable regressions remain. Otherwise retain Blocked or In progress as appropriate. Update `Next` using satisfied dependencies.
-8. **Report.** Briefly summarize guarantees, verification results, consequential decisions, and remaining gaps.
+2. **Experiment path.** For uncertain mechanisms, replace steps 3–6:
+Have builder create the smallest safe, in-scope probe. Use cheap safety or deterministic tests; test-first and test-writer are optional. Run prerequisite checks, then seek direct evidence promptly; coordinate user interaction or permission as needed. Record observations, conclusions, limitations, and recovery outcome; distinguish mechanism evidence from automated checks. Stop at the planned checkpoint. Report blockers; do not substitute hardening for the experiment.
+3. **Specify tests.** Have **test-writer** add minimal, high-signal behavioral tests without changing implementation. For contract-only slices, use objective contract/schema checks.
+4. **Establish baseline.** Run tests. Confirm failures represent missing behavior, not setup, syntax, or unrelated problems. If behavior already exists, verify meaningful coverage without forcing red. Report unrelated baseline failures separately.
+5. **Implement.** Have **builder** implement only this slice without weakening valid tests or expanding scope. Document significant, non-obvious decisions and tradeoffs in `docs/features/<feature-name>/decisions.md`; omit routine choices. Keep entries as short as possible without loosing information or meaning.
+6. **Verify.** Run relevant behavioral, regression, and applicable type, lint, build, integration, and contract checks. Investigate failures; distinguish baseline issues from regressions. Correct invalid tests through test-writer with explanation, never workarounds.
+7. **Handle changes.** Escalate consequential ambiguity or changed guarantees. Update the spec and affected tests before proceeding. Do not silently redefine behavior.
+8. **Complete.** Mark Done in `plan.md` only when guarantees are verified and no attributable regressions remain. Otherwise retain Blocked or In progress as appropriate. Update `Next` using satisfied dependencies. For experiments, Done means the planned question was answered with adequate evidence, including a negative result—not that a working fix exists. Keep dependent implementation blocked if its required outcome was not established.
+9. **Report.** Briefly summarize guarantees, verification results, consequential decisions, and remaining gaps.
 
 **Stop. Never start another slice automatically.**
