@@ -82,15 +82,53 @@ class SyncTest(unittest.TestCase):
         self.assertEqual((project / "architecture.md").read_text(), "new template")
         self.assertEqual((project / self.skill).read_text(), "new skill")
 
-    def test_overwrite_requires_an_explicit_valid_scope(self):
+    def test_overwrite_rejects_invalid_file_scope(self):
         project = self.project("existing")
         self.run_script("install.sh", project)
         (self.template / "AGENTS.md").write_text("new template")
-        for args in (("--overwrite",), ("--all",), ("--overwrite", "AGENTS.md", "--all")):
+        for args in (("--all",), ("--overwrite", "AGENTS.md", "--all")):
             self.run_script("update.sh", *args, status=2)
         report = self.run_script("update.sh", "--overwrite", "AGENTS.md", "README.md", status=1)
         self.assertIn("README.md", report)
         self.assertEqual((project / "AGENTS.md").read_text(), "original")
+
+    def test_named_overwrite_can_target_pi_files_one_file_or_all_files(self):
+        plugins, glowkin, other = (self.project(name) for name in ("plugins", "glowkin", "other"))
+        for project in (plugins, glowkin, other):
+            self.run_script("install.sh", project)
+            for relative in (self.skill, *self.project_files):
+                (project / relative).write_text("local")
+
+        self.run_script("update.sh", "--name", "glowkin", "--overwrite")
+        self.assertEqual((glowkin / self.skill).read_text(), "original")
+        self.assertEqual((glowkin / ".pi/settings.json").read_text(), "original")
+        self.assertEqual((glowkin / "AGENTS.md").read_text(), "local")
+        self.assertEqual((glowkin / "architecture.md").read_text(), "local")
+        self.assertEqual((plugins / self.skill).read_text(), "local")
+
+        self.run_script("update.sh", "--overwrite", "AGENTS.md", "--name", "plugins")
+        self.assertEqual((plugins / "AGENTS.md").read_text(), "original")
+        self.assertEqual((plugins / self.skill).read_text(), "local")
+
+        self.run_script("update.sh", "--name", "plugins,glowkin", "--overwrite", "--all")
+        for relative in (self.skill, *self.project_files):
+            self.assertEqual((plugins / relative).read_text(), "original")
+            self.assertEqual((glowkin / relative).read_text(), "original")
+            self.assertEqual((other / relative).read_text(), "local")
+
+    def test_rejects_unknown_or_ambiguous_names_before_syncing(self):
+        glowkin = self.project("glowkin")
+        first = glowkin / "plugins"
+        second = self.project("plugins")
+        first.mkdir()
+        for project in (glowkin, first, second):
+            self.run_script("install.sh", project)
+        (self.template / self.skill).write_text("new skill")
+
+        for name, message in (("unknown", "No registered project"), ("plugins", "Ambiguous project")):
+            report = self.run_script("update.sh", "--name", f"glowkin,{name}", status=1)
+            self.assertIn(message, report)
+            self.assertEqual((glowkin / self.skill).read_text(), "original")
 
     def test_registers_conflicting_existing_files_without_replacing_them(self):
         project = self.project("existing")

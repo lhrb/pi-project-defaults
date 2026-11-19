@@ -43,16 +43,19 @@ Develop bottom-up: grow structure with demonstrated needs, not unbounded generat
 After testing a change in a project, copy it back to this template. Run these commands from the template directory:
 
 ```sh
-./update.sh                                    # Sync agents, prompts, and skills; skip local changes
-./update.sh --overwrite AGENTS.md architecture.md  # Replace only these files
-./update.sh --overwrite --all                   # Replace all managed files
+./update.sh                                      # Sync agents, prompts, and skills; skip local changes
+./update.sh --name glowkin --overwrite            # Replace managed .pi/ files in glowkin
+./update.sh --name glowkin --overwrite AGENTS.md  # Replace only AGENTS.md in glowkin
+./update.sh --name plugins,glowkin --overwrite --all # Replace all managed files in both projects
 ```
 
 The template keeps absolute project paths and last-synced file hashes in its local, gitignored `.template-installs.json`. Missing or moved projects are reported without blocking other projects. Register a moved project at its new path with `install.sh`.
 
 By default, `update.sh` syncs only files under `.pi/agents/`, `.pi/prompts/`, and `.pi/skills/`. It reports local edits and deletions but still syncs the remaining files across all registered projects. It leaves `AGENTS.md`, `architecture.md`, and `.pi/settings.json` alone.
 
-`--overwrite` replaces local edits and restores local deletions across all registered projects. Pass exact template-relative file paths or `--all` to include every managed default. Sync never deletes project files or replaces symlinks or directories. Install and update return a nonzero status if they skip a conflict, even if other files synced successfully.
+Use `--name` with one or more comma-separated project folder names to limit the update. Without it, all registered projects are included. Unknown or ambiguous names stop the update before it writes anything.
+
+`--overwrite` replaces local edits and restores local deletions in managed `.pi/` files, including `.pi/settings.json`, but does not touch local dependencies. Pass one or more exact template-relative file paths to replace only those files, or `--all` to also include `AGENTS.md` and `architecture.md`. Sync never deletes project files or replaces symlinks or directories. Install and update return a nonzero status if they skip a conflict, even if other files synced successfully.
 
 ## Workflow
 
