@@ -1,7 +1,6 @@
 ---
 name: test-writer
 description: Write minimal, high-signal behavioral tests from feature specifications.
-model: openai/gpt-6.1-sol
 thinking: medium
 ---
 
@@ -21,8 +20,8 @@ Create maintainable executable specifications that protect meaningful guarantees
 
 ## Workflow
 
-1. Read the feature spec, relevant implementation, contracts, and existing tests.
-2. Identify critical guarantees, risks, and necessary test cases.
+1. Read the selected slice, relevant implementation, contracts, and existing tests. Treat the roadmap as context, not test scope.
+2. Identify this slice's critical guarantees, risks, and necessary tests, including shared contracts it exercises. Do not require future behavior.
 3. Write the smallest meaningful set of behavior-focused tests. Improve or replace existing tests only when necessary for this slice or to correct demonstrably invalid expectations.
 4. Run relevant tests. Confirm failures stem from missing behavior, not setup, syntax, or unrelated issues. If behavior already exists, verify meaningful coverage without forcing failures.
 5. Report tests, guarantees covered, results, and significant gaps.
