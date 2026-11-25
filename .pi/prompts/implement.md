@@ -1,24 +1,19 @@
 ---
 name: implement
-description: Implement one selected slice with test-writer and builder, verify it, then stop for review.
+description: Have builder deliver and verify one usable slice, then stop for review.
 thinking: medium
-argument-hint: "<plan-or-slice-file> [slice]"
+argument-hint: "<plan-or-slice-file> [slice] | --direct <outcome>"
 ---
 
-1. **Select and inspect.** Read `$1` and locate its `plan.md`. For a slice file, select it; for a plan, use `$2` or `Next`. The roadmap is context, not scope. Inspect code, conventions, dependencies, and required outcomes. If selection is ambiguous, blockers remain, or scope spans distinct review points, clarify or propose a split and stop. The request approves only the selected slice.
-2. **Gate implementation.** For `Type: Experiment`, stop and give the exact `/experiment <plan-or-slice-file> [slice]` command. If an unresolved
-assumption could invalidate the approach, add a minimal `Type: Experiment` slice to plan.md with its question, decision, required evidence,
-prerequisites, and safeguards. If ready, set Next to the experiment, mark implementation Blocked on its outcome, and give the exact command.
-If not ready, say what’s missing. Stop without probing. Otherwise mark implementation In progress.
-3. **Specify tests.** Have **test-writer** add minimal, high-signal behavioral tests without changing implementation. For contract-only slices, use objective contract/schema checks.
-4. **Establish baseline.** Run tests. Confirm failures represent missing behavior, not setup, syntax, or unrelated problems. If behavior already exists, verify meaningful coverage without forcing red. Report unrelated baseline failures separately.
-5. **Implement.** Have **builder** implement only this slice without weakening valid tests or expanding scope. Document significant, non-obvious decisions and tradeoffs in `docs/features/<feature-name>/decisions.md`; omit routine choices. Keep entries brief without losing meaning.
-6. **Verify.** Run relevant behavioral, regression, and applicable type, lint, build, integration, and contract checks. Investigate failures; distinguish baseline issues from regressions. Correct invalid tests through test-writer with explanation, never workarounds.
-7. **Handle changes.** Let builder own internal design and routine UX. Escalate blockers, consequential ambiguity, changed guarantees, or discoveries invalidating the approach. Update the spec and affected tests before proceeding; do not silently redefine behavior.
-8. **Complete.** Mark Done in `plan.md` only when guarantees are verified and no attributable regressions remain; set `Review: <slice>: pending` and `Next: None`. Otherwise retain Blocked or In progress as appropriate.
-9. **Report.** Give **doc-writer** a short handoff to write the review brief and record verification, gaps, and decision links in `plan.md`. Recommend a next direction without specifying or starting it.
+1. **Select and inspect.** If `$1` is `--direct`, use `${@:2}` as the outcome; no plan is required. Otherwise read `$1` and locate its `plan.md`. For a slice file, select it; for a plan, use `$2` or `Next`. The roadmap is context, not scope. Inspect code, conventions, dependencies, and required outcomes. If selection is ambiguous, blockers remain, or scope spans distinct review points, clarify or propose a split and stop. The request approves only the selected slice.
+2. **Gate implementation.** For `Type: Experiment`, stop and give the exact `/experiment <plan-or-slice-file> [slice]` command. Check routine assumptions within scope. Plan a standalone probe only if a cheap answer would change what to build and building the slice cannot safely or practically answer it. When needed, record a `Type: Experiment` slice in `plan.md` with its question, decision, evidence, prerequisites, and safeguards. Mark dependent implementation Blocked. If ready, set `Next` to the experiment and give the exact command; otherwise say what's missing. Stop without running the standalone probe. When proceeding with implementation, mark In progress if there is a plan.
+3. **Implement.** Have **builder** own the slice and its tests. Use test-first when requested; otherwise prefer it for known regressions or settled, high-risk guarantees. Use **test-writer** when independent test design adds value. When testing first, confirm failures reflect missing behavior, not setup, syntax, or unrelated problems. Never force failures for existing behavior.
+4. **Verify.** Confirm builder tried the real workflow where applicable and ran relevant behavioral, regression, and applicable type, lint, build, integration, and contract checks. Use objective contract/schema checks for contract-only slices. Investigate failures and report unrelated baseline issues separately. Correct invalid tests with explanation; never weaken valid tests.
+5. **Handle changes.** Let builder own internal design and routine UX. Escalate blockers, consequential ambiguity, changed guarantees, or discoveries invalidating the approach. Update the spec if present and affected tests before proceeding; do not silently redefine behavior.
+6. **Complete.** In an existing plan, mark Done only when guarantees are verified and no attributable regressions remain. On Done, set `Review: <slice>: pending` and `Next: None`. Otherwise retain Blocked or In progress as appropriate.
+7. **Report.** Record significant, non-obvious tradeoffs in the handoff; use `docs/features/<feature-name>/decisions.md` if they would obscure the plan. Update any plan with verification, gaps, and decision links. Use **doc-writer** if the handoff warrants it. Recommend a next direction without specifying or starting it.
 
-**Review brief** (chat, even on early stops; also near the top of `plan.md` when a slice is selected):
+**Review brief** (chat, even on early stops; also near the top of any plan for the selected slice):
 
 - **Your call:** Exact decision or action, with a recommended reply; otherwise “No input needed.”
 - **What happened:** Plain-language result. If blocked, say what failed, what it prevents, and who can unblock it.

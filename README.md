@@ -22,7 +22,7 @@ Develop bottom-up: grow structure with demonstrated needs, not unbounded generat
 | [`.pi/agents/test-writer.md`](.pi/agents/test-writer.md) | Minimal behavioral—not implementation—tests; signal over coverage counts. |
 | [`.pi/agents/doc-writer.md`](.pi/agents/doc-writer.md) | Condense docs for human review and agent handoff without losing context. |
 | [`.pi/skills/plan-feature/`](.pi/skills/plan-feature/SKILL.md) | Clarify consequential questions; plan minimal, independently verifiable slices without prescribing implementation. |
-| [`.pi/prompts/implement.md`](.pi/prompts/implement.md) | Coordinate test-first implementation of one slice, then stop. |
+| [`.pi/prompts/implement.md`](.pi/prompts/implement.md) | Deliver and verify one builder-led slice, with or without a plan. |
 | [`.pi/settings.json`](.pi/settings.json) | Load the required subagent extension. |
 
 ## Setup
@@ -60,19 +60,10 @@ Use `--name` with one or more comma-separated project folder names to limit the 
 
 ## Workflow
 
-**Small task:** describe the outcome and request `builder`; omit planning artifacts that add no value.
+**Clear outcome:** describe one usable slice to `builder` or use `/implement --direct "<outcome and constraints>"`. No plan required.
 
-**Larger feature:**
+**Need to plan:** use `/skill:feature-planner` when the first usable slice is unclear, dependencies need coordination, or a consequential choice blocks progress. Review the guarantees, assumptions, and blockers. Resolve consequential questions before implementation. If saved, run `/implement docs/features/<feature-name>/plan.md`. Run standalone probes only via `/experiment`.
 
-```text
-/skill:feature-planner <desired outcome and constraints>
-/implement docs/features/<feature-name>/<slice-name>.md
-```
-
-1. Review generated `plan.md`, guarantees, assumptions, and blockers. Resolve consequential questions before implementation.
-2. `test-writer` adds behavioral tests. Failures must reflect missing behavior; never force failures for existing behavior.
-3. `builder` implements the slice. Run relevant regression, type, lint, build, integration, and contract checks.
-4. Record significant decisions in `decisions.md`. Mark Done only after verification without attributable regressions.
-5. Inspect and refine the result. Explicitly start the next ready slice.
+`builder` implements and verifies the slice. Use test-first or specialist handoffs when they add value. Mark planned work Done only after verification without attributable regressions. Try the result and explicitly start the next slice.
 
 Instructions neither enforce permissions nor guarantee correctness. Human review remains necessary.
