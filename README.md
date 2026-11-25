@@ -20,6 +20,7 @@ Develop bottom-up: grow structure with demonstrated needs, not unbounded generat
 | [`AGENTS.md`](AGENTS.md) | Load architecture guidance; focused work, concise communication. |
 | [`.pi/agents/builder.md`](.pi/agents/builder.md) | Own internal design and routine UX; implement, review, verify; preserve valid guarantees. |
 | [`.pi/agents/test-writer.md`](.pi/agents/test-writer.md) | Minimal behavioral—not implementation—tests; signal over coverage counts. |
+| [`.pi/agents/doc-writer.md`](.pi/agents/doc-writer.md) | Condense docs for human review and agent handoff without losing context. |
 | [`.pi/skills/plan-feature/`](.pi/skills/plan-feature/SKILL.md) | Clarify consequential questions; plan minimal, independently verifiable slices without prescribing implementation. |
 | [`.pi/prompts/implement.md`](.pi/prompts/implement.md) | Coordinate test-first implementation of one slice, then stop. |
 | [`.pi/settings.json`](.pi/settings.json) | Load the required subagent extension. |
@@ -35,7 +36,7 @@ Develop bottom-up: grow structure with demonstrated needs, not unbounded generat
 
    `install.sh` requires an existing project directory. It copies missing defaults, adopts matching files, and reports differences without overwriting them. Run it for existing projects too, including those created with GitHub or `copy.sh`. Use `copy.sh` for a one-off copy without registration.
 
-2. Install Pi and configure a model provider. Set `model` in both agent files or remove it to inherit the parent model. Defaults reflect Lukas’s setup.
+2. Install Pi and configure a model provider. Optionally set `model` per agent; otherwise it inherits the parent model.
 3. Run `pi` from the project root. Review instructions and package declarations before granting project trust. Pi then installs configured [`@gotgenes/pi-subagents`](https://www.npmjs.com/package/@gotgenes/pi-subagents). Use `/reload` after edits.
 
 ## Sync projects
