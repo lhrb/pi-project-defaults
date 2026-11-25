@@ -16,6 +16,12 @@ If not ready, say what’s missing. Stop without probing. Otherwise mark impleme
 6. **Verify.** Run relevant behavioral, regression, and applicable type, lint, build, integration, and contract checks. Investigate failures; distinguish baseline issues from regressions. Correct invalid tests through test-writer with explanation, never workarounds.
 7. **Handle changes.** Let builder own internal design and routine UX. Escalate blockers, consequential ambiguity, changed guarantees, or discoveries invalidating the approach. Update the spec and affected tests before proceeding; do not silently redefine behavior.
 8. **Complete.** Mark Done in `plan.md` only when guarantees are verified and no attributable regressions remain; set `Review: <slice>: pending` and `Next: None`. Otherwise retain Blocked or In progress as appropriate.
-9. **Report.** Briefly state what the requester can try and how, verification results, consequential decisions, and gaps. Recommend a next direction without specifying or starting it; review feedback informs the next planning pass.
+9. **Report.** Keep verification and gaps in `plan.md`; link consequential decisions. Recommend a next direction without specifying or starting it.
+
+**Review brief** (chat, even on early stops; also near the top of `plan.md` when a slice is selected):
+
+- **Your call:** Exact decision or action, with a recommended reply; otherwise “No input needed.”
+- **What happened:** Plain-language result. If blocked, say what failed, what it prevents, and who can unblock it.
+- **See it:** One small example: how to try it, what to expect, and what you observed. Say if unverified.
 
 **Stop. Never start another slice automatically.**
